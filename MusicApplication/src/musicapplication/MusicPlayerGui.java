@@ -84,6 +84,11 @@ public class MusicPlayerGui extends JFrame {
 
         previous.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         previous.setText("Previous");
+        previous.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousActionPerformed(evt);
+            }
+        });
 
         restart.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         restart.setText("Restart");
@@ -229,6 +234,32 @@ public class MusicPlayerGui extends JFrame {
         }
 
     }//GEN-LAST:event_nextActionPerformed
+
+    private void previousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousActionPerformed
+        playPause.setText("Pause");
+        if (!clip.isRunning()) {
+            if (i <= 0) {
+                i = 0;
+            }
+            clip.stop();
+            clip.close();
+            loadMusic();
+            clip.start();
+            i--;
+            progressBar1.start();
+
+        } else if (clip.isRunning()) {
+            if (i <= 0) {
+                i = 0;
+            }
+            clip.stop();
+            clip.close();
+            loadMusic();
+            clip.start();
+            i--;
+            progressBar1.start();
+        }
+    }//GEN-LAST:event_previousActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
