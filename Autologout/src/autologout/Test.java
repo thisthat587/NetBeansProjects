@@ -25,7 +25,7 @@ class Cut implements Runnable{
         {
             try{
                 Screen screen = new Screen();
-                Pattern pattern = new Pattern(imagePath).similar(0.8);
+                Pattern pattern = new Pattern(imagePath).similar(0.76);
                 while (true) {
                     try {
 
@@ -45,12 +45,30 @@ public class Test {
     };
 
     public static void main(String[] args) {
-        try{  
-           Region rg = new Region(428,266,563,350);
-            rg.highlight();
-            Thread.sleep(5*1000);
-            System.out.println(rg.text());
-        }catch(Exception e){}
+        try{
+            Region region = new Region(588, 360, 749, 490);
+
+            // Capture the text in the specified region
+            region.highlight();
+            Thread.sleep(2000);
+            String text = region.text();
+            System.out.println("Captured Text: " + text);
+            // Try to find the text with adjusted sensitivity
+            Match match = region.findText("ncemdmbsbbsjd@gmail.com");
+
+            // Check if the text was found
+            if (match != null) {
+                System.out.println("Found Text: " + match.text());
+
+                // Click on the found text
+                region.click(match);
+                Thread.sleep(3000);
+            } else {
+                System.err.println("Text not found.");
+            }
+        } catch (FindFailed | InterruptedException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
    
     }
 

@@ -5,6 +5,9 @@ import javax.swing.Timer.*;
 import javax.swing.Timer;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -45,42 +48,93 @@ class Cross implements Runnable{
 
     public CustomCheck() {
         initComponents();
-         try{
-            Runnable runner = new Runnable(){
-                public void run()
-                {
-                    cus = new Custom();
-                    run = new Thread(cus);
-                    System.out.println("passed");
-                    run.start();
-                 
-                }
-            };
-            Thread runner_th = new Thread(runner);
-            runner_th.setName("Gmail selector ");
-            runner_th.start();
-        }catch(Exception e){e.printStackTrace();}
+         
         
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        guild = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Guild Id");
+
+        jButton1.setText("Start");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 80, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(guild, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jButton1)))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 101, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(guild, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+     public static void copyClip(String textToCopy) {
+        StringSelection stringSelection = new StringSelection(textToCopy);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
+     private Thread tt ;
+     private boolean flag=true;
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try{
+            if(flag){
+                        Runnable runner = new Runnable(){
+                        public void run()
+                            {
+                                cus = new Custom();
+                                copyClip(guild.getText());
+                                run = new Thread(cus);
+                                System.out.println("passed");
+                                run.start();
+                            }
+                        };
+                        tt = new Thread(runner);
+                        tt.setName("Gmail selector ");
+                        tt.start();
+                        flag=false;
+                        jButton1.setText("Stop");
+            }
+            else{
+                tt.stop();
+                flag=true;
+                jButton1.setText("Start");
+            }
+            
+        }catch(Exception e){e.printStackTrace();}
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     
     public static void main(String args[]) {
@@ -114,21 +168,23 @@ class Cross implements Runnable{
     }
 
     class Custom implements Runnable  {
-        private Region sc_gmail = new Region(585,367,749,486);
+        private Region sc_gmail = new Region(588, 360, 749, 490);
         private Screen sc = new Screen();
         private String temp[]={new String(),new String()};
         public volatile ArrayList<String[]> custom = new ArrayList<>();
         private ArrayList<String> stack = new ArrayList<>();
         private String base = "C:\\Users\\duana\\OneDrive\\Documents\\NetBeansProjects\\Autologout\\src\\autologout\\";
         private ArrayList<String> que = new ArrayList<>();
+        private boolean flag=true;
         Custom(){}
         public void run()
         {   
-            sc_gmail.highlight();
+//            sc_gmail.highlight();
             while(true)
                 try{
                     Thread.sleep(3000);
                     this.gmails();
+                    System.out.println("progress is Starting...");
                     this.ready();
                 }catch(Exception e){e.printStackTrace();}
         }
@@ -139,7 +195,7 @@ class Cross implements Runnable{
 
             ArrayList<String> arr = new ArrayList<>();
             try{
-                Region sc_gmail = new Region(585,367,749,486);
+                Region sc_gmail = new Region(588, 360, 749, 490);
 //                sc.mouseMove(200,200);
                 String gmail[] = sc_gmail.text().split("\n");
                 que.clear();
@@ -162,13 +218,13 @@ class Cross implements Runnable{
                 try{
                     for(String q :que)
                         {
-                         q  = q.trim();
+                        String qtemp = q;
+                        q  = q.trim();
                         if(!this.stack.contains(q)&& Character.isLetter(q.charAt(0)))
                             {
                             try
                                 {
-                                Match text = sc_gmail.findText(q);
-                                sc_gmail.click(text);
+                                Match text = sc_gmail.findText(qtemp);
                                 sc_gmail.click(text);
                                 Thread.sleep(1*1000);
                                 String []IMAGES = {"c4.png", "confirm.png", "copy.png", "cr1.png", "cr2.png", "cr3.png", "ok.png"};
@@ -177,25 +233,25 @@ class Cross implements Runnable{
                                  for (String imageName : IMAGES) {
                                         System.out.println(imageName);
                                         Cut task = new Cut(imageName);
-                                        execute.add(new Thread(task));
-                                        execute.get(execute.size()-1).start();
-                                    }
-//                          p@p.com
+                                        Thread temp = new Thread(task);
+                                        execute.add(temp);
+                                        temp.start();
+                                }
+                                System.out.println("Process is started");
                                 Thread.sleep(3*1000);
                                 sc.type("p");
                                 Thread.sleep(30*1000);
                                 for(Thread th:execute){th.stop();}
-                                execute.clear();
-
-//                                sc_gmail.type("'",KeyModifier.CTRL);
-                                this.waitCustom(q);
+                                sc.type("p");
+                                Thread.sleep(200);
+                                sc.type(";");
                                 this.stack.add(new String(q));
                                 que.clear();
                                 return;
                                 }
                             catch(Exception e)
                             {e.printStackTrace();}
-
+                                  return;
                             }
                         }
                 }catch(Exception e){e.printStackTrace();}
@@ -285,5 +341,8 @@ class Cross implements Runnable{
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField guild;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
